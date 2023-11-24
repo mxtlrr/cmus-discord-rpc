@@ -31,7 +31,7 @@ duration()
     if [[ "$nnn" -lt 10 ]]; then
       position_real_ns=$(printf "0%.0f" $position_new_seconds)
       real_ns=$(printf "0%.0f" $new_seconds)
-      echo "($position_integer_part:$position_real_ns / $integer_part:$real_ns)"
+      echo "(0$position_integer_part:$position_real_ns / 0$integer_part:$real_ns)"
     else
       position_real_ns=$(printf "%.0f" $position_new_seconds)
       real_ns=$(printf "0%.0f" $new_seconds)
@@ -39,9 +39,27 @@ duration()
     fi
   else
     position_real_ns=$(printf "%.0f" $position_new_seconds)
-    # echo "($position_integer_part:$position_real_ns / ?)"
-    real_ns=$(printf "%.0f" $new_seconds)
-    echo "($position_integer_part:$position_real_ns / $integer_part:$real_ns)"
+    if [[ "$position_real_ns" -lt 10 ]]; then
+      real_ns=$(printf "%.0f" $new_seconds)
+      if [[ "$position_integer_part" -eq 0 ]]; then
+        if [[ "$position_real_ns" -eq 0 ]]; then
+          echo "(0:00 / $integer_part:$real_ns)"
+        else
+          echo "(0$position_integer_part:0$position_real_ns / $integer_part:$real_ns)"
+        fi
+      else 
+        echo "($position_integer_part:0$position_real_ns / $integer_part:$real_ns)"
+      fi
+    else
+      position_real_ns=$(printf "%.0f" $position_new_seconds)
+      if [[ "$position_real_ns" -eq 0 ]]; then exit 2; fi
+      real_ns=$(printf "%.0f" $new_seconds)
+      if [[ "$position_integer_part" -eq 0 ]]; then
+        echo "(0$position_integer_part:$position_real_ns / $integer_part:$real_ns)"
+      else 
+        echo "($position_integer_part:$position_real_ns / $integer_part:$real_ns)"
+      fi
+    fi
   fi
 }
 
