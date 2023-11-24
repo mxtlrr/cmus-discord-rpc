@@ -1,6 +1,11 @@
 from pypresence import Presence
 import time, subprocess
 
+# Check if CMUS is open
+f = __import__("os").system("pidof cmus")
+if f != 0:
+  print("CMUS is not running! Bye.")
+  exit(2)
 
 client_id = 1177691132185018418
 RPC = Presence(client_id)
